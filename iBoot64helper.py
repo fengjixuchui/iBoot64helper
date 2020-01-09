@@ -42,7 +42,7 @@ def find_image4_load(base_ea):
 
     if ea_list[0] != ida_idaapi.BADADDR:
         func_ea = ida_funcs.get_func(ea_list[0]).start_ea
-        print "\t[+] _image4_load = 0x%x" % (func_ea)
+        print("\t[+] _image4_load = 0x%x" % (func_ea))
         idc.set_name(func_ea, "_image4_load", idc.SN_CHECK)
         return func_ea
 
@@ -57,7 +57,7 @@ def find_img4decodeinit(base_ea):
 
         if ea_func_list[0].frm != ida_idaapi.BADADDR:
             i4d_ea = ida_funcs.get_func(ea_func_list[0].frm).start_ea
-            print "\t[+] _Img4DecodeInit = 0x%x" % (i4d_ea)
+            print("\t[+] _Img4DecodeInit = 0x%x" % (i4d_ea))
             idc.set_name(i4d_ea, "_Img4DecodeInit", idc.SN_CHECK)
             return i4d_ea
 
@@ -294,7 +294,14 @@ def accept_file(fd, fname):
         fd.seek(0x280)
         ver_str = fd.read(0x20)
 
-        if ver_str[:5] == "iBoot":
+        try:
+            # Python 3.x.
+            label = "".join(map(chr, ver_str[:5]))
+        except TypeError:
+            # Python 2.x.
+            label = ver_str[:5]
+
+        if "iBoot" == label:
             version = ver_str[6:] # for later
             ret = {"format" : "iBoot (AArch64)", "processor" : "arm"}
 
